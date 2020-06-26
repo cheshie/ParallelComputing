@@ -33,7 +33,7 @@ int main()
     for(auto &q : quarter){q.join();}    
 
     // Write to the file
-    fwrite(colo,3,sizeof(colo),fp);
+    fwrite(colo,1,sizeof(colo),fp);
 
     fclose(fp);
     return 0;

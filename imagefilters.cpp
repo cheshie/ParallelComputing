@@ -124,7 +124,7 @@ int main()
 	// TBB initialization with explicit number of threads
 	tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());
 	// Read file into rgb array and copy it
-	fread(inpt, 3, sizeof(inpt), fp);
+	fread(inpt, 1, sizeof(inpt), fp);
 	memcpy(otpt, inpt, sizeof(inpt));
 	fclose(fp);
 
@@ -154,7 +154,7 @@ int main()
 	// Save filtered image to a output file
 	FILE * fotpt = fopen("otpt.ppm","wb"); /* b -  binary mode */
 	fprintf(fotpt,"P6\n #\n %d\n %d\n %d\n",iXmax,iYmax,MaxColorComponentValue);
-	fwrite(otpt, 3, sizeof(otpt), fotpt);
+	fwrite(otpt, 1, sizeof(otpt), fotpt);
 
 	fclose(fotpt);
 return 0;

@@ -76,6 +76,6 @@ int main(int c, char **v)
 	#endif		
 
 	// write to the output file
-	fwrite(colo,3,sizeof(colo),fp);
+	fwrite(colo,1,sizeof(colo),fp);
 	return 0;
 }

@@ -37,7 +37,7 @@ int main(int c, char **v)
     subTriangle(depth, get_next_coords(cs, 0));
 
     // output to the file
-	fwrite(colo,3,sizeof(colo),fp);
+	fwrite(colo,1,sizeof(colo),fp);
 	return 0;
 }
 
