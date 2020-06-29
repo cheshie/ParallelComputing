@@ -1,17 +1,19 @@
 from collections import namedtuple, deque
 from itertools import combinations, product
 from random import randint, choice
+from time import sleep
+
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 from numpy import ones, uint16, where, zeros, array, ndarray
 from threading import Thread, Lock
-
-# structure containing width and height used by Maze class
-sizetuple = namedtuple('size', ['w','h'])
+from matplotlib.pyplot import waitforbuttonpress
 
 class Maze:
+    # structure containing width and height used by Maze class
+    sizetuple = namedtuple('size', ['w', 'h'])
     def __init__(self):
-        self.mutex1 = Lock()
-        self.count3 = 1
+        pass
     # Generates an array of given size that is later filled with pixels of generated maze
     # Array can have these values
     # -1 - wall
@@ -22,7 +24,7 @@ class Maze:
         height = height if height % 2 != 0 else height + 1
 
         # Generate array with just 1's
-        self.size = sizetuple(w=width, h=height)
+        self.size = Maze.sizetuple(w=width, h=height)
         # Array containing maze
         self.mazearr = ones(shape=self.size) * - 1
         # Array of values (r,g,b)
@@ -68,10 +70,33 @@ class Maze:
                     count += 1
     #
 
-    def plotMaze(self):
+    # Does not work as for now, needs different approach
+    # Why not possible to plot from different threads
+    # https://stackoverflow.com/questions/34764535/why-cant-matplotlib-plot-in-a-different-thread
+    def animateSolvingMaze(self, size=(15,15)):
         fig = plt.figure("Maze solver")
         plt.suptitle("Each corridor - different color")
-        plt.imshow(self.rgbmaze)#, cmap='Greys', interpolation='none')
+        self.generate(*size)
+        plt.imshow(self.rgbmaze)
+
+        def init():
+            fig.set_data(self.rgbmaze)
+
+        def animate(i):
+            fig.set_data(self.rgbmaze)
+            return fig
+
+        FuncAnimation(fig, animate, init_func=init, interval=50)
+        plt.show(block=False)
+        waitforbuttonpress()
+        plt.close()
+    #
+
+    # Stop == False => image will disappear automatically
+    def show(self):
+        fig = plt.figure("Maze solver")
+        fig.suptitle("Each corridor - different color")
+        plt.imshow(self.rgbmaze)
         plt.show()
     #
 
@@ -80,9 +105,10 @@ class Maze:
         return (randint(0,255),randint(0,255), randint(0,255))
     #
 
+    # plot == False => will not show the maze during solving
     def solveMaze(self):
         # Start main thread that enters the maze and later will split into more threads
-        mainThread = Thread(target=maze.solvingAlg, args=(1, 0, maze.rgb_rand(),))
+        mainThread = Thread(target=maze.solvingAlg, args=(1, 0, maze.rgb_rand(), ))
         mainThread.start()
         mainThread.join()
     #
@@ -128,6 +154,7 @@ class Maze:
 
 if __name__ == "__main__":
     maze = Maze()
-    maze.generate(200, 200)
+    # maze.animateSolvingMaze()
+    maze.generate(20, 20)
     maze.solveMaze()
-    maze.plotMaze()
+    maze.show()
